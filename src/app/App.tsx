@@ -6,6 +6,10 @@ import { LoadingScreen } from "./components/LoadingScreen";
 import { CustomCursor } from "./components/CustomCursor";
 import { Navigation } from "./components/Navigation";
 import { SmoothScrollProvider } from "../providers/SmoothScrollProvider";
+import { ThemeProvider } from "../providers/ThemeProvider";
+import { AmbientLighting } from "./components/theme/AmbientLighting";
+import { AtmosphericLayer } from "./components/theme/AtmosphericLayer";
+import { NightCursorEnhancement } from "./components/theme/NightCursorEnhancement";
 
 import { HomePage } from "./pages/HomePage";
 import { CollectionsPage } from "./pages/CollectionsPage";
@@ -17,7 +21,7 @@ import { ConsultationPage } from "./pages/ConsultationPage";
 import { AIAnalyzerPage } from "./pages/AIAnalyzerPage";
 import { AboutPage } from "./pages/AboutPage";
 import { CheckoutPage } from "./pages/CheckoutPage";
-import { colors, motion as motionTokens, fonts } from "../lib/tokens";
+import { motion as motionTokens, fonts, colors } from "../lib/tokens";
 
 /** Page fade wrapper — reads duration and easing from the token system */
 function PageWrapper({ children }: { children: React.ReactNode }) {
@@ -84,32 +88,37 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      {/*
-        SmoothScrollProvider: wired and ready.
-        Activate useLenis() inside SmoothScrollProvider.tsx once
-        gsap + lenis packages are installed (npm install gsap lenis).
-      */}
-      <SmoothScrollProvider>
-        <div
-          className="relative"
-          style={{
-            fontFamily: fonts.sans,
-            backgroundColor: colors.parchment,
-            WebkitFontSmoothing: "antialiased",
-            MozOsxFontSmoothing: "grayscale",
-          }}
-        >
-          {/* Custom cursor — desktop only */}
-          <div className="hidden md:block">
-            <CustomCursor />
+      <ThemeProvider>
+        <SmoothScrollProvider>
+          {/* Cinematic theme transition flash — above everything */}
+          <AmbientLighting />
+
+          {/* Fixed atmospheric layer: grain + vignette + radial bloom */}
+          <AtmosphericLayer />
+
+          <div
+            className="relative"
+            style={{
+              fontFamily: fonts.sans,
+              /* backgroundColor is now driven by var(--color-bg) via body in globals.css */
+              WebkitFontSmoothing: "antialiased",
+              MozOsxFontSmoothing: "grayscale",
+            }}
+          >
+            {/* Custom cursor — desktop only */}
+            <div className="hidden md:block">
+              <NightCursorEnhancement />
+              <CustomCursor />
+            </div>
+
+            {/* Cinematic loading screen */}
+            {!loaded && <LoadingScreen onComplete={() => setLoaded(true)} />}
+
+            <AppRoutes />
           </div>
-
-          {/* Cinematic loading screen */}
-          {!loaded && <LoadingScreen onComplete={() => setLoaded(true)} />}
-
-          <AppRoutes />
-        </div>
-      </SmoothScrollProvider>
+        </SmoothScrollProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }
+
