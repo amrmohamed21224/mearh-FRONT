@@ -151,7 +151,6 @@ export function createHorizontalScroll(
   tl.to(track, {
     x: () => -getScrollWidth(),
     ease: 'none',
-    invalidateOnRefresh: true,
   });
 
   const st = ScrollTrigger.create({

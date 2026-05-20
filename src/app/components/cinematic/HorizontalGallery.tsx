@@ -57,7 +57,6 @@ export function HorizontalGallery({
         tl.to(track, {
           x: () => -getScrollWidth(),
           ease: 'none',
-          invalidateOnRefresh: true,
         });
 
         // Update progress counter
