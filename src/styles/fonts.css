@@ -1,0 +1,5 @@
+/*
+ * Fonts are loaded via <link> in index.html with rel="preconnect" and display=swap.
+ * The previous @import here was render-blocking — removed as part of the performance pass.
+ * See index.html for the current font loading strategy.
+ */
