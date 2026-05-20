@@ -161,7 +161,7 @@ export function Navigation() {
             aria-modal="true"
             aria-label="Navigation menu"
             className="fixed inset-0 flex flex-col justify-end"
-            style={{ backgroundColor: palette.bg === "#0D0C0B" ? "#0D0C0B" : "#1E1C1A", zIndex: zIndex.mobileMenu }}
+            style={{ backgroundColor: isDark ? "#0D0C0B" : "#1E1C1A", zIndex: zIndex.mobileMenu }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
