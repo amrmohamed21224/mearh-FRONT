@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X } from "lucide-react";
-import { fonts, motion as motionTokens, zIndex, blur } from "../../lib/tokens";
-import { useTheme } from "../../providers/ThemeProvider";
-import { ThemeToggle } from "./theme/ThemeToggle";
+import { colors, fonts, motion as motionTokens, zIndex, blur } from "../../lib/tokens";
 
 const navLinks = [
   { label: "Collections", href: "/collections" },
@@ -14,10 +12,9 @@ const navLinks = [
 ];
 
 export function Navigation() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const location                = useLocation();
-  const { palette, isDark }     = useTheme();
+  const [scrolled, setScrolled]   = useState(false);
+  const [menuOpen, setMenuOpen]   = useState(false);
+  const location                   = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -28,18 +25,7 @@ export function Navigation() {
   // Close mobile menu on navigation
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
-  // On homepage hero before scroll: always show light text
-  const isHeroLight = location.pathname === "/" && !scrolled && !isDark;
-
-  // Nav background: theme-aware
-  const navBg = scrolled ? palette.navBg : "transparent";
-
-  // Text colors
-  const logoColor  = isHeroLight ? "rgba(247,244,238,1)"   : palette.textPrimary;
-  const linkColor  = isHeroLight ? "rgba(247,244,238,0.55)" : palette.textSecondary;
-  const linkHover  = isHeroLight ? "rgba(247,244,238,1)"   : palette.textPrimary;
-  const ctaBorder  = isHeroLight ? "rgba(247,244,238,0.4)" : palette.brass;
-  const ctaColor   = isHeroLight ? "rgba(247,244,238,1)"   : palette.brass;
+  const isLight = location.pathname === "/" && !scrolled;
 
   return (
     <>
@@ -49,7 +35,7 @@ export function Navigation() {
         animate={{
           paddingTop:      scrolled ? "20px" : "32px",
           paddingBottom:   scrolled ? "20px" : "32px",
-          backgroundColor: navBg,
+          backgroundColor: scrolled ? colors.parchmentFilter : colors.transparent,
           backdropFilter:  scrolled ? blur.nav : "blur(0px)",
         }}
         transition={{ duration: motionTokens.duration.normal, ease: motionTokens.ease.sharp }}
@@ -64,8 +50,9 @@ export function Navigation() {
                 fontFamily: fonts.serif,
                 fontWeight: fonts.weights.normal,
                 fontSize: "1.1rem",
+                color: isLight ? colors.parchment : colors.charcoal,
               }}
-              animate={{ color: logoColor }}
+              animate={{ color: isLight ? colors.parchment : colors.charcoal }}
               transition={{ duration: motionTokens.duration.normal }}
             >
               MEARH
@@ -85,9 +72,13 @@ export function Navigation() {
                 >
                   <motion.span
                     className="relative tracking-[0.15em] uppercase text-[10px]"
-                    style={{ fontFamily: fonts.sans, fontWeight: fonts.weights.normal }}
-                    animate={{ color: linkColor }}
-                    whileHover={{ color: linkHover }}
+                    style={{
+                      fontFamily: fonts.sans,
+                      fontWeight: fonts.weights.normal,
+                      color: isLight ? colors.parchment55 : colors.stoneTaupe,
+                    }}
+                    animate={{ color: isLight ? colors.parchment55 : colors.stoneTaupe }}
+                    whileHover={{ color: isLight ? colors.parchment : colors.charcoal }}
                     transition={{ duration: motionTokens.duration.fast }}
                   >
                     {link.label}
@@ -95,7 +86,7 @@ export function Navigation() {
                       <motion.span
                         layoutId="nav-indicator"
                         className="absolute -bottom-1 left-0 right-0 h-px"
-                        style={{ backgroundColor: palette.brass }}
+                        style={{ backgroundColor: colors.brass }}
                         aria-hidden="true"
                       />
                     )}
@@ -105,24 +96,25 @@ export function Navigation() {
             })}
           </nav>
 
-          {/* Desktop right — CTA + theme toggle */}
-          <div className="hidden md:flex items-center gap-4">
-            {/* Theme toggle */}
-            <ThemeToggle />
-
-            {/* Consult CTA */}
+          {/* Desktop CTA */}
+          <div className="hidden md:flex items-center gap-6">
             <Link to="/consultation" data-cursor="hover">
               <motion.div
                 className="px-6 py-2.5 tracking-[0.15em] uppercase text-[10px] border"
-                style={{ fontFamily: fonts.sans, fontWeight: fonts.weights.normal }}
+                style={{
+                  fontFamily:  fonts.sans,
+                  fontWeight:  fonts.weights.normal,
+                  borderColor: isLight ? colors.parchment40 : colors.brass,
+                  color:       isLight ? colors.parchment : colors.brass,
+                }}
                 animate={{
-                  borderColor: ctaBorder,
-                  color:       ctaColor,
+                  borderColor: isLight ? colors.parchment40 : colors.brass,
+                  color:       isLight ? colors.parchment : colors.brass,
                 }}
                 whileHover={{
-                  backgroundColor: palette.brass,
-                  borderColor:     palette.brass,
-                  color:           "#F7F4EE",
+                  backgroundColor: colors.brass,
+                  borderColor:     colors.brass,
+                  color:           colors.parchment,
                 }}
                 transition={{ duration: motionTokens.duration.fast }}
               >
@@ -131,24 +123,22 @@ export function Navigation() {
             </Link>
           </div>
 
-          {/* Mobile: theme toggle + menu toggle */}
-          <div className="flex md:hidden items-center gap-3">
-            <ThemeToggle />
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
-              aria-expanded={menuOpen}
-              aria-controls="mobile-menu"
-              data-cursor="hover"
+          {/* Mobile menu toggle */}
+          <button
+            className="md:hidden"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+            data-cursor="hover"
+          >
+            <motion.div
+              animate={{ color: isLight ? colors.parchment : colors.charcoal }}
+              transition={{ duration: motionTokens.duration.normal }}
             >
-              <motion.div
-                animate={{ color: logoColor }}
-                transition={{ duration: motionTokens.duration.normal }}
-              >
-                {menuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
-              </motion.div>
-            </button>
-          </div>
+              {menuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+            </motion.div>
+          </button>
         </div>
       </motion.header>
 
@@ -161,18 +151,14 @@ export function Navigation() {
             aria-modal="true"
             aria-label="Navigation menu"
             className="fixed inset-0 flex flex-col justify-end"
-            style={{ backgroundColor: isDark ? "#0D0C0B" : "#1E1C1A", zIndex: zIndex.mobileMenu }}
+            style={{ backgroundColor: colors.charcoal, zIndex: zIndex.mobileMenu }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: motionTokens.duration.normal }}
           >
             <nav aria-label="Mobile navigation" className="p-12 pb-20">
-              <div
-                className="h-px w-full mb-16"
-                style={{ backgroundColor: palette.border }}
-                aria-hidden="true"
-              />
+              <div className="h-px w-full mb-16" style={{ backgroundColor: colors.stone20 }} aria-hidden="true" />
               {navLinks.map((link, i) => {
                 const isActive = location.pathname.startsWith(link.href);
                 return (
@@ -184,20 +170,16 @@ export function Navigation() {
                     <motion.div
                       className="py-5 border-b"
                       style={{
-                        borderColor:   palette.border,
-                        fontFamily:    fonts.serif,
-                        fontSize:      "clamp(2rem, 8vw, 3.5rem)",
-                        fontWeight:    fonts.weights.light,
-                        color:         "rgba(247,244,238,0.9)",
+                        borderColor: colors.stone10,
+                        fontFamily:  fonts.serif,
+                        fontSize:    "clamp(2rem, 8vw, 3.5rem)",
+                        fontWeight:  fonts.weights.light,
+                        color:       colors.parchment,
                         letterSpacing: "0.05em",
                       }}
                       initial={{ x: -30, opacity: 0 }}
                       animate={{ x: 0,   opacity: 1 }}
-                      transition={{
-                        delay:    i * 0.06,
-                        duration: motionTokens.duration.slow,
-                        ease:     motionTokens.ease.sharp,
-                      }}
+                      transition={{ delay: i * motionTokens.spring.cursorTrail.damping / 1000, duration: motionTokens.duration.slow, ease: motionTokens.ease.sharp }}
                     >
                       {link.label}
                     </motion.div>
@@ -215,8 +197,8 @@ export function Navigation() {
                   <div
                     className="inline-block px-8 py-3 border tracking-[0.2em] uppercase text-[11px]"
                     style={{
-                      borderColor: palette.brass,
-                      color:       palette.brass,
+                      borderColor: colors.brass,
+                      color:       colors.brass,
                       fontFamily:  fonts.sans,
                     }}
                   >
@@ -229,13 +211,15 @@ export function Navigation() {
         )}
       </AnimatePresence>
 
-      {/* Focus ring styles */}
+      {/* Focus ring styles alongside custom cursor */}
       <style>{`
+        /* Restore focus visibility for keyboard users without breaking cursor aesthetics */
         *:focus-visible {
-          outline: 2px solid ${palette.brass};
+          outline: 2px solid ${colors.brass};
           outline-offset: 3px;
           border-radius: 1px;
         }
+        /* Only hide cursor on devices that can hover (has pointer) */
         @media (hover: hover) and (pointer: fine) {
           * { cursor: none !important; }
         }

@@ -69,7 +69,7 @@ export function CustomCursor() {
           opacity: isVisible ? 0.3 : 0,
           width: 4,
           height: 4,
-          backgroundColor: "var(--color-brass)",
+          backgroundColor: "#B5924C",
         }}
       />
 
@@ -83,26 +83,18 @@ export function CustomCursor() {
         }}
       >
         <motion.div
-          className="relative flex items-center justify-center rounded-full border animate-cursor-transition"
-          style={{
-            borderColor: "var(--color-brass)",
-            backgroundColor: "var(--color-brass)",
-          }}
+          className="relative flex items-center justify-center rounded-full border"
           animate={{
             width: cursorState === "view" || cursorState === "material" ? 80 : isHovered ? 48 : 12,
             height: cursorState === "view" || cursorState === "material" ? 80 : isHovered ? 48 : 12,
             borderColor:
-              cursorState === "material"
-                ? "var(--color-brass)"
-                : isHovered
-                ? "var(--color-text-primary)"
-                : "var(--color-brass)",
+              cursorState === "material" ? "#B5924C" : isHovered ? "#1E1C1A" : "#B5924C",
             backgroundColor:
               cursorState === "default"
-                ? "var(--color-brass)"
+                ? "#B5924C"
                 : cursorState === "hover"
-                ? "var(--color-brass-glow)"
-                : "var(--color-brass-glow)",
+                ? "rgba(30,28,26,0.08)"
+                : "rgba(181,146,76,0.1)",
           }}
           transition={{ type: "spring", damping: 20, stiffness: 400 }}
         >
@@ -110,8 +102,8 @@ export function CustomCursor() {
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-[9px] tracking-[0.2em] uppercase font-light"
-              style={{ fontFamily: "'DM Sans', sans-serif", color: "var(--color-text-primary)" }}
+              className="text-[9px] tracking-[0.2em] uppercase text-charcoal font-light"
+              style={{ fontFamily: "'DM Sans', sans-serif", color: "#1E1C1A" }}
             >
               {cursorLabel || (cursorState === "material" ? "Touch" : "View")}
             </motion.span>
